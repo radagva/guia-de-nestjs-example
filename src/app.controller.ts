@@ -6,6 +6,26 @@ const pets = [
   { id: 3, name: "milo" },
 ];
 
+// class ValidateMinLightPipe implements PipeTransform<string, string> {
+//   transform(value: string): string {
+//     if (value.length < 2) {
+//       return value.repeat(8);
+//     }
+//
+//     return value;
+//   }
+// }
+
+const ValidateMinLightPipe = {
+  transform(value: string): string {
+    if (value.length < 2) {
+      return value.repeat(8);
+    }
+
+    return value;
+  },
+};
+
 @Controller()
 export class AppController {
   @Get("mascotas")
@@ -16,7 +36,8 @@ export class AppController {
   }
 
   @Get("/pets")
-  loadPets(@Query("name") name: string) {
+  loadPets(@Query("name", ValidateMinLightPipe) name: string) {
+    console.log({ name });
     return pets.filter((pet) =>
       pet.name.toLowerCase().includes(name.toLowerCase()),
     );
