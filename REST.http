@@ -1,1 +1,10 @@
-GET http://localhost:3000/pets?name=h
+GET http://localhost:3000/pets?name=mil
+
+###
+
+POST http://localhost:3000/pets
+
+{
+  "name": "Milo",
+  "owner": "angel@gmail.com"
+}
