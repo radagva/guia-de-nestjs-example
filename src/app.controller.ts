@@ -1,4 +1,21 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  ValidationPipe,
+} from "@nestjs/common";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 
 const pets = [
   { id: 1, name: "peto" },
@@ -16,15 +33,32 @@ const pets = [
 //   }
 // }
 
-const ValidateMinLightPipe = {
-  transform(value: string): string {
-    if (value.length < 2) {
-      return value.repeat(8);
-    }
+// const ValidateMinLightPipe = {
+//   transform(value: string): string {
+//     if (value.length < 2) {
+//       return value.repeat(8);
+//     }
+//
+//     return value;
+//   },
+// };
 
-    return value;
-  },
-};
+class SavePetBodyDto {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(7)
+  public name: string;
+}
+
+class QueryValidation {
+  @IsNotEmpty()
+  public name: string;
+
+  @IsEmail()
+  @IsOptional()
+  owner?: string;
+}
 
 @Controller()
 export class AppController {
@@ -36,10 +70,11 @@ export class AppController {
   }
 
   @Get("/pets")
-  loadPets(@Query("name", ValidateMinLightPipe) name: string) {
-    console.log({ name });
+  loadPets(@Query() query: QueryValidation) {
+    console.log(query);
+
     return pets.filter((pet) =>
-      pet.name.toLowerCase().includes(name.toLowerCase()),
+      pet.name.toLowerCase().includes(query.name.toLowerCase()),
     );
   }
 
@@ -51,5 +86,10 @@ export class AppController {
   @Get("/pets/:id/abilities/:ability")
   loadPetAbilities() {
     return [];
+  }
+
+  @Post("/pets")
+  savePet(@Body() input: SavePetBodyDto) {
+    return input;
   }
 }
