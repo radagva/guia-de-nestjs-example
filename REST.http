@@ -8,3 +8,25 @@ POST http://localhost:3000/pets
   "name": "Milo",
   "owner": "angel@gmail.com"
 }
+
+###
+
+PUT http://localhost:3000/pets/2
+
+{
+  "name": "Milo",
+  "owner": "angel@gmail.com"
+}
+
+###
+
+PATCH http://localhost:3000/pets/2
+
+{
+  "name": "Milo",
+  "years": 2
+}
+
+###
+
+DELETE http://localhost:3000/pets/3
