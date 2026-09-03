@@ -8,8 +8,14 @@ import {
   Query,
   ValidationPipe,
 } from "@nestjs/common";
-import { IsNotEmpty, IsString, MinLength } from "class-validator";
-import { SavePetBodyDto } from "./dto/save-pet-input.dto";
+import {
+  IsEmail,
+  IsEmpty,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 
 const pets = [
   { id: 1, name: "peto" },
@@ -36,6 +42,17 @@ const pets = [
 //     return value;
 //   },
 // };
+
+class SavePetBodyDto {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(7)
+  public name: string;
+
+  @IsEmail()
+  public owner: string;
+}
 
 class ValidateQueryDto {
   @IsNotEmpty()
