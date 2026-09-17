@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -10,10 +11,13 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  Res,
 } from "@nestjs/common";
 import { SavePetBodyDto } from "src/pets/dto/save-pet-input.dto";
 import { ValidatePetsQueryDto } from "./dto/validate-pets-query.dto";
 import { PartiallyUpdatePetDto, UpdatePetDto } from "./dto/update-pet.dto";
+import { type Response, type Request } from "express";
 
 const pets = [
   { id: 1, name: "peto" },
@@ -84,5 +88,17 @@ export class PetsController {
     pets.splice(foundIndex, 1);
 
     return pets;
+  }
+
+  @Post("example")
+  @Header("X-Custom-Header-2", "Milo")
+  public handlerFunc(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.setHeader("X-Custom-Example-Header", "Angel");
+    res.status(500);
+
+    return 1;
   }
 }
