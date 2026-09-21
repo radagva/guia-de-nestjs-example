@@ -1,94 +1,76 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Header,
-  NotFoundException,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
-  Put,
   Query,
   Req,
   Res,
 } from "@nestjs/common";
 import { SavePetBodyDto } from "src/pets/dto/save-pet-input.dto";
 import { ValidatePetsQueryDto } from "./dto/validate-pets-query.dto";
-import { PartiallyUpdatePetDto, UpdatePetDto } from "./dto/update-pet.dto";
 import { type Response, type Request } from "express";
-
-const pets = [
-  { id: 1, name: "peto" },
-  { id: 2, name: "striky" },
-  { id: 3, name: "milo" },
-];
+import { PetsService } from "./pets.service";
 
 @Controller("pets")
 export class PetsController {
-  @Get("mascotas")
-  getHello() {
-    return {
-      value: "hello world!",
-    };
-  }
+  constructor(private readonly petService: PetsService) {}
 
   @Get()
   loadPets(@Query() query: ValidatePetsQueryDto) {
-    console.log({ query });
-    return pets.filter((pet) =>
-      pet.name.toLowerCase().includes(query.name.toLowerCase()),
-    );
+    return this.petService.findAll(query.name);
   }
 
   @Get(":id")
   loadPet(@Param("id", ParseIntPipe) id: number) {
-    return pets.find((pet) => pet.id === id);
+    return this.petService.find(id);
   }
 
   @Post()
   savePet(@Body() input: SavePetBodyDto) {
-    return input;
+    return this.petService.store(input);
   }
 
-  @Put(":id")
-  updatePet(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() input: UpdatePetDto,
-  ) {
-    const pet = pets.find((current) => current.id === id);
-
-    if (!pet) throw new NotFoundException("Pet not found");
-
-    return input;
-  }
-
-  @Patch(":id")
-  partiallyUpdatePet(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() input: PartiallyUpdatePetDto,
-  ) {
-    const pet = pets.find((current) => current.id === id);
-
-    if (!pet) throw new NotFoundException("Pet not found");
-
-    return {
-      ...pet,
-      ...input,
-    };
-  }
-
-  @Delete(":id")
-  deletePet(@Param("id", ParseIntPipe) id: number) {
-    const foundIndex = pets.findIndex((current) => current.id === id);
-
-    if (foundIndex === -1) throw new NotFoundException("Pet not found");
-
-    pets.splice(foundIndex, 1);
-
-    return pets;
-  }
+  // @Put(":id")
+  // updatePet(
+  //   @Param("id", ParseIntPipe) id: number,
+  //   @Body() input: UpdatePetDto,
+  // ) {
+  //   const pet = pets.find((current) => current.id === id);
+  //
+  //   if (!pet) throw new NotFoundException("Pet not found");
+  //
+  //   return input;
+  // }
+  //
+  // @Patch(":id")
+  // partiallyUpdatePet(
+  //   @Param("id", ParseIntPipe) id: number,
+  //   @Body() input: PartiallyUpdatePetDto,
+  // ) {
+  //   const pet = pets.find((current) => current.id === id);
+  //
+  //   if (!pet) throw new NotFoundException("Pet not found");
+  //
+  //   return {
+  //     ...pet,
+  //     ...input,
+  //   };
+  // }
+  //
+  // @Delete(":id")
+  // deletePet(@Param("id", ParseIntPipe) id: number) {
+  //   const foundIndex = pets.findIndex((current) => current.id === id);
+  //
+  //   if (foundIndex === -1) throw new NotFoundException("Pet not found");
+  //
+  //   pets.splice(foundIndex, 1);
+  //
+  //   return pets;
+  // }
 
   @Post("example")
   @Header("X-Custom-Header-2", "Milo")
