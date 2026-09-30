@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
 import { PetsController } from "./pets.controller";
 import { PetsService } from "./pets.service";
 import {
@@ -12,6 +12,7 @@ import {
   type ValueConfig,
 } from "./pets.constants";
 
+@Global()
 @Module({
   controllers: [PetsController],
   providers: [
@@ -42,5 +43,6 @@ import {
       useExisting: StorageManager,
     },
   ],
+  exports: [PetsService],
 })
 export class PetsModule {}
